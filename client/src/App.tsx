@@ -4,13 +4,16 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import NotFound from "@/pages/not-found";
 import Tasks from "@/pages/tasks";
+import { PageLayout } from "@/components/PageLayout";
 
 function Router() {
   return (
-    <Switch>
-      <Route path="/" component={Tasks} />
-      <Route component={NotFound} />
-    </Switch>
+    <PageLayout>
+      <Switch>
+        <Route path="/" component={Tasks} />
+        <Route component={NotFound} />
+      </Switch>
+    </PageLayout>
   );
 }
 
