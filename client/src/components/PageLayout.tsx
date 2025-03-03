@@ -8,14 +8,27 @@ interface PageLayoutProps {
 
 export function PageLayout({ children }: PageLayoutProps) {
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-gradient-to-br from-background via-background/95 to-muted/30">
       <Navbar />
-      <main className="flex-1 container py-6 md:py-8">
+      <main className="flex-1 container max-w-5xl mx-auto py-8 px-4">
         {children}
       </main>
-      <footer className="border-t py-4 text-center text-sm text-muted-foreground">
-        <div className="container">
-          TaskMaster © {new Date().getFullYear()}
+      <footer className="border-t py-6 mt-auto">
+        <div className="container max-w-5xl mx-auto px-4 flex justify-between items-center">
+          <div className="text-sm text-muted-foreground">
+            TaskMaster © {new Date().getFullYear()}
+          </div>
+          <div className="flex space-x-4">
+            <a href="#" className="text-sm text-muted-foreground hover:text-primary transition-colors">
+              Privacy
+            </a>
+            <a href="#" className="text-sm text-muted-foreground hover:text-primary transition-colors">
+              Terms
+            </a>
+            <a href="#" className="text-sm text-muted-foreground hover:text-primary transition-colors">
+              Help
+            </a>
+          </div>
         </div>
       </footer>
     </div>

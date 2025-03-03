@@ -141,30 +141,48 @@ export default function Tasks() {
             </div>
 
             {/* Search and Filter Bar */}
-            <div className="flex flex-col gap-4 sm:flex-row">
-              <div className="relative flex-1">
-                <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                <Input
-                  placeholder="Search tasks..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-9"
-                />
+            <div className="bg-muted/20 p-4 rounded-lg border border-border/50 mt-4">
+              <div className="flex flex-col space-y-3 sm:flex-row sm:space-y-0 sm:space-x-3">
+                <div className="relative flex-1">
+                  <div className="absolute left-3 top-2.5 h-5 w-5 text-muted-foreground">
+                    <Search className="h-5 w-5 text-muted-foreground/70" />
+                  </div>
+                  <Input
+                    placeholder="Search tasks..."
+                    className="pl-10 h-10 bg-background border-muted focus-visible:ring-primary/50"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                  />
+                </div>
+                <Select
+                  value={filterStatus}
+                  onValueChange={(value) =>
+                    setFilterStatus(value as FilterStatus)
+                  }
+                >
+                  <SelectTrigger className="w-full sm:w-[150px] h-10 bg-background border-muted">
+                    <SelectValue placeholder="Filter by Status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Tasks</SelectItem>
+                    <SelectItem value="completed">Completed</SelectItem>
+                    <SelectItem value="pending">Pending</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
-              <Select
-                value={filterStatus}
-                onValueChange={(value) => setFilterStatus(value as FilterStatus)}
-              >
-                <SelectTrigger className="w-full sm:w-[180px]">
-                  <SlidersHorizontal className="mr-2 h-4 w-4" />
-                  <SelectValue placeholder="Filter by status" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Tasks</SelectItem>
-                  <SelectItem value="completed">Completed</SelectItem>
-                  <SelectItem value="pending">Pending</SelectItem>
-                </SelectContent>
-              </Select>
+              <div className="flex items-center justify-between mt-3 text-sm text-muted-foreground">
+                <p>
+                  Showing <span className="font-medium text-foreground">{filteredTasks?.length || 0}</span> of <span className="font-medium text-foreground">{stats.total}</span> tasks
+                </p>
+                {searchQuery && (
+                  <button 
+                    onClick={() => setSearchQuery("")}
+                    className="text-primary hover:text-primary/80 text-sm font-medium"
+                  >
+                    Clear search
+                  </button>
+                )}
+              </div>
             </div>
           </CardHeader>
 
