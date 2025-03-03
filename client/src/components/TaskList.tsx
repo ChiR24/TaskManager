@@ -9,6 +9,12 @@ import {
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Edit2, Trash2, PlusCircle } from "lucide-react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { useToast } from "@/hooks/use-toast";
 import { queryClient, apiRequest } from "@/lib/queryClient";
 import { type Task } from "@shared/schema";
@@ -61,14 +67,14 @@ export default function TaskList({ tasks, onEdit }: TaskListProps) {
         <Card
           key={task.id}
           className={`group relative overflow-hidden transition-all duration-300 hover:shadow-lg ${
-            task.completed 
-              ? "bg-muted/50 hover:bg-muted/60" 
+            task.completed
+              ? "bg-muted/50 hover:bg-muted/60"
               : "bg-card hover:bg-card/95"
           }`}
         >
           {/* Status indicator */}
           <div
-            className={`absolute left-0 top-0 h-full w-1 ${
+            className={`absolute left-0 top-0 h-full w-1 transition-colors ${
               task.completed ? "bg-green-500/50" : "bg-orange-500/50"
             }`}
           />
@@ -76,24 +82,33 @@ export default function TaskList({ tasks, onEdit }: TaskListProps) {
           <CardHeader className="pb-2">
             <div className="flex items-start gap-4">
               <div className="flex items-center justify-center pt-1">
-                <Checkbox
-                  checked={task.completed}
-                  onCheckedChange={(checked) =>
-                    toggleMutation.mutate({
-                      id: task.id,
-                      completed: checked as boolean,
-                    })
-                  }
-                  className={`h-5 w-5 transition-colors ${
-                    task.completed 
-                      ? "border-green-500/50 text-green-500" 
-                      : "border-orange-500/50"
-                  }`}
-                />
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Checkbox
+                        checked={task.completed}
+                        onCheckedChange={(checked) =>
+                          toggleMutation.mutate({
+                            id: task.id,
+                            completed: checked as boolean,
+                          })
+                        }
+                        className={`h-5 w-5 transition-colors ${
+                          task.completed
+                            ? "border-green-500/50 text-green-500"
+                            : "border-orange-500/50"
+                        }`}
+                      />
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Mark as {task.completed ? "incomplete" : "complete"}</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
               </div>
               <div className="flex-1 space-y-1">
                 <CardTitle
-                  className={`text-lg transition-colors ${
+                  className={`text-lg transition-all duration-300 ${
                     task.completed
                       ? "text-muted-foreground line-through"
                       : "text-foreground"
@@ -105,24 +120,43 @@ export default function TaskList({ tasks, onEdit }: TaskListProps) {
                   {task.description}
                 </CardDescription>
               </div>
-              <div className="flex gap-2 opacity-0 transition-opacity group-hover:opacity-100">
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => onEdit(task)}
-                  className="h-8 w-8 hover:bg-primary/10 hover:text-primary"
-                >
-                  <Edit2 className="h-4 w-4" />
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => deleteMutation.mutate(task.id)}
-                  disabled={deleteMutation.isPending}
-                  className="h-8 w-8 hover:bg-destructive/10 hover:text-destructive"
-                >
-                  <Trash2 className="h-4 w-4" />
-                </Button>
+              <div className="flex gap-2 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => onEdit(task)}
+                        className="h-8 w-8 hover:bg-primary/10 hover:text-primary"
+                      >
+                        <Edit2 className="h-4 w-4" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Edit task</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => deleteMutation.mutate(task.id)}
+                        disabled={deleteMutation.isPending}
+                        className="h-8 w-8 hover:bg-destructive/10 hover:text-destructive"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Delete task</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
               </div>
             </div>
           </CardHeader>
