@@ -23,6 +23,7 @@ import { Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { queryClient, apiRequest } from "@/lib/queryClient";
 import { insertTaskSchema, type Task } from "@shared/schema";
+import { type z } from "zod";
 
 interface TaskFormProps {
   task: Task | null;
@@ -32,17 +33,16 @@ interface TaskFormProps {
 
 export default function TaskForm({ task, isOpen, onClose }: TaskFormProps) {
   const { toast } = useToast();
-  const form = useForm({
+  const form = useForm<z.infer<typeof insertTaskSchema>>({
     resolver: zodResolver(insertTaskSchema),
     defaultValues: {
       title: task?.title || "",
       description: task?.description || "",
-      completed: task?.completed || false,
     },
   });
 
   const createMutation = useMutation({
-    mutationFn: async (data: typeof form.getValues) => {
+    mutationFn: async (data: z.infer<typeof insertTaskSchema>) => {
       const res = await apiRequest("POST", "/api/tasks", data);
       return res.json();
     },
@@ -58,7 +58,7 @@ export default function TaskForm({ task, isOpen, onClose }: TaskFormProps) {
   });
 
   const updateMutation = useMutation({
-    mutationFn: async (data: typeof form.getValues) => {
+    mutationFn: async (data: z.infer<typeof insertTaskSchema>) => {
       const res = await apiRequest("PATCH", `/api/tasks/${task!.id}`, data);
       return res.json();
     },

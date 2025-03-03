@@ -20,8 +20,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { type Task } from "@shared/schema";
-import TaskList from "@/components/TaskList";
-import TaskForm from "@/components/TaskForm";
+import TaskList from "../components/TaskList";
+import TaskForm from "../components/TaskForm";
 import { Progress } from "@/components/ui/progress";
 
 type FilterStatus = "all" | "completed" | "pending";
@@ -56,6 +56,11 @@ export default function Tasks() {
         task.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
         task.description.toLowerCase().includes(searchQuery.toLowerCase()),
     );
+
+  const handleEdit = (task: Task) => {
+    setEditingTask(task);
+    setIsFormOpen(true);
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-muted/20 p-4 md:p-8">
@@ -104,7 +109,9 @@ export default function Tasks() {
         <div className="mb-8">
           <div className="mb-2 flex items-center justify-between">
             <p className="text-sm text-muted-foreground">Overall Progress</p>
-            <p className="text-sm font-medium">{Math.round(completionPercentage)}%</p>
+            <p className="text-sm font-medium">
+              {Math.round(completionPercentage)}%
+            </p>
           </div>
           <Progress value={completionPercentage} className="h-2" />
         </div>
@@ -113,7 +120,9 @@ export default function Tasks() {
           <CardHeader className="space-y-4">
             <div className="flex flex-row items-center justify-between">
               <div className="space-y-1">
-                <h2 className="text-2xl font-semibold tracking-tight">Your Tasks</h2>
+                <h2 className="text-2xl font-semibold tracking-tight">
+                  Your Tasks
+                </h2>
                 <p className="text-sm text-muted-foreground">
                   Manage and track your tasks
                 </p>
@@ -165,13 +174,7 @@ export default function Tasks() {
                 <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
               </div>
             ) : (
-              <TaskList
-                tasks={filteredTasks || []}
-                onEdit={(task) => {
-                  setEditingTask(task);
-                  setIsFormOpen(true);
-                }}
-              />
+              <TaskList tasks={filteredTasks || []} onEdit={handleEdit} />
             )}
           </CardContent>
         </Card>
