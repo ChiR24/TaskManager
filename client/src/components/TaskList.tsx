@@ -44,8 +44,8 @@ export default function TaskList({ tasks, onEdit }: TaskListProps) {
   if (tasks.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-12 text-center">
-        <div className="rounded-full bg-muted p-4">
-          <PlusCircle className="h-8 w-8 text-muted-foreground" />
+        <div className="rounded-full bg-primary/10 p-4">
+          <PlusCircle className="h-8 w-8 text-primary" />
         </div>
         <h3 className="mt-4 text-lg font-semibold">No tasks yet</h3>
         <p className="mt-2 text-sm text-muted-foreground">
@@ -60,13 +60,22 @@ export default function TaskList({ tasks, onEdit }: TaskListProps) {
       {tasks.map((task) => (
         <Card
           key={task.id}
-          className={`transition-all duration-200 hover:shadow-md ${
-            task.completed ? "bg-muted/50" : "bg-card"
+          className={`group relative overflow-hidden transition-all duration-300 hover:shadow-lg ${
+            task.completed 
+              ? "bg-muted/50 hover:bg-muted/60" 
+              : "bg-card hover:bg-card/95"
           }`}
         >
+          {/* Status indicator */}
+          <div
+            className={`absolute left-0 top-0 h-full w-1 ${
+              task.completed ? "bg-green-500/50" : "bg-orange-500/50"
+            }`}
+          />
+
           <CardHeader className="pb-2">
             <div className="flex items-start gap-4">
-              <div className="flex items-center justify-center">
+              <div className="flex items-center justify-center pt-1">
                 <Checkbox
                   checked={task.completed}
                   onCheckedChange={(checked) =>
@@ -75,12 +84,16 @@ export default function TaskList({ tasks, onEdit }: TaskListProps) {
                       completed: checked as boolean,
                     })
                   }
-                  className="h-5 w-5"
+                  className={`h-5 w-5 transition-colors ${
+                    task.completed 
+                      ? "border-green-500/50 text-green-500" 
+                      : "border-orange-500/50"
+                  }`}
                 />
               </div>
               <div className="flex-1 space-y-1">
                 <CardTitle
-                  className={`text-lg ${
+                  className={`text-lg transition-colors ${
                     task.completed
                       ? "text-muted-foreground line-through"
                       : "text-foreground"
@@ -92,12 +105,12 @@ export default function TaskList({ tasks, onEdit }: TaskListProps) {
                   {task.description}
                 </CardDescription>
               </div>
-              <div className="flex gap-2">
+              <div className="flex gap-2 opacity-0 transition-opacity group-hover:opacity-100">
                 <Button
                   variant="ghost"
                   size="icon"
                   onClick={() => onEdit(task)}
-                  className="h-8 w-8"
+                  className="h-8 w-8 hover:bg-primary/10 hover:text-primary"
                 >
                   <Edit2 className="h-4 w-4" />
                 </Button>
@@ -106,7 +119,7 @@ export default function TaskList({ tasks, onEdit }: TaskListProps) {
                   size="icon"
                   onClick={() => deleteMutation.mutate(task.id)}
                   disabled={deleteMutation.isPending}
-                  className="h-8 w-8 text-destructive hover:text-destructive/90"
+                  className="h-8 w-8 hover:bg-destructive/10 hover:text-destructive"
                 >
                   <Trash2 className="h-4 w-4" />
                 </Button>
